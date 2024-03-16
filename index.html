@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+  <title>36-Z4-3 Náledí</title>
+    <meta name="viewport" content="width=device-width"> 
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+        .useFullWidthForMobile{
+            width: 100%;
+            border-spacing: 0 !important;
+        }
+        /*unsets min-height a min-width, so the table fits on screen without overflow)*/
+        .useFullWidthForMobile > tbody > tr > td{
+            min-height: unset;
+            min-width: unset;
+        }
+        .ok{
+            width: 4.5em;
+            margin-right: 20px;
+            border: none;
+            padding: 7px;
+            border-radius: 3px
+        }
+        .inlineCode{
+            display: inline;
+            padding: 3px;
+            border-radius: 2px;
+            background: #e3e6e8;
+        }
+        .blockCode{
+            display: block;
+            width: fit-content;
+            padding: 3px;
+            border-radius: 2px;
+            background: #e3e6e8;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .popup{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            background: white;
+            padding: 10px;
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; /*https://getcssscan.com/css-box-shadow-examples*/
+            border-radius: 3px;
+            overflow: auto;
+            max-height: 95%;
+            transition: ease opacity 0.5s;
+            visibility: visible
+        }
+        .popup > .heading{
+            margin-top: 0px;
+            font-size: 1.2rem;
+        }
+         .hidden{
+           visibility: hidden;
+            opacity: 0;
+        }
+        .hiddenWithNoHeight{
+            display: none !important;
+        }
+        .popup > p{
+            line-height: 1.5;
+        }
+        .popup > ul{
+            line-height: 1.5;
+        }
+        .popisek{
+            font-size: 1.5rem;
+            font-family: "Consolas", monospace;
+        }
+        .ctverecek{
+            height: 1.5rem;
+            width: 1.5rem;
+            display: inline-block;
+            vertical-align:bottom;
+        }
+        #inputfile{
+            font-size: 1rem;
+        }
+        .s{
+            aspect-ratio: 1 / 1;
+        }
+        #mapText{
+            overflow-x: scroll;
+        }
+        td{
+            font-family: Consolas;
+            height:  0.5vw;
+            width:   0.5vw;
+            min-height: 15px;
+            min-width: 15px;
+        }
+        .skippedText{
+            color: #4eb54b;
+        }
+        .green{
+            background: green;
+        }
+        .greenText{
+            color: green;
+        }
+        table{
+            font-size: 18px;
+            border-spacing: 1.5px;
+            margin: auto;
+            background: #0a0a0d;
+        }
+        td{
+            background: white;
+        }
+        #visualisationDelayControls{
+            display: inline;
+            white-space: nowrap;
+        }
+        #visualisationDelayPicker{
+            height: 1.2rem;
+        }
+        .visited{
+            background: #c77e1f;
+        }
+        .visitedText{
+            color: #c77e1fbf;
+        }
+        .skipped{
+            background: #6acd67;
+        }
+        .end{
+            background: #0004ff !important;
+        }
+        .endText{
+            color: #2c71ed;
+        }
+        .endCtverecek{
+            background: #2c71ed;
+        }
+        .startText{
+            color: #f85701;
+        }
+        .considered{
+            background: red !important;
+        }
+        .cesta{
+            background-image: url('./rightArrow.png') !important;
+            /* background: cyan !important; */
+        }
+        .pathText{
+            color: #02bebe
+        }
+        .L{
+            transform: rotate(180deg);
+        }
+        .P{
+            transform:  rotate(0deg);
+        }
+        .N{
+            transform: rotate(-90deg);
+        }
+        .D{
+            transform: rotate(90deg);
+        }
+        .N.D{
+            background-image: url('./arrowTwoDirections.png') !important;
+        }
+        .N.D.P{
+            background-image: url('./ndp.png') !important;
+            transform: rotate(0deg);
+        }
+        .N.D.L{
+            background-image: url('./ndp.png') !important;
+            transform: rotate(180deg);
+        }
+        .P.L.D{
+            background-image: url('./ndp.png') !important;
+            transform: rotate(90deg);
+        }
+        .P.L.N{
+            background-image: url("http://192.168.0.141:8000/ndp.png") !important;
+            transform: rotate(-90deg);
+        }
+        .L.P{
+            background-image: url('./arrowTwoDirections.png') !important;
+            /* transform: rotate(90deg); */
+        }
+        .P.N{
+            background-image: url('./arrowPerpendSameDir.png') !important;
+            transform: rotate(-90deg);
+        }
+        .D.P{
+            background-image: url('./arrowPerpendSameDirPreklop.png') !important;
+            transform: rotate(-90deg);
+        }
+        .L.N{
+            background-image: url('./arrowPerpendSameDirPreklop.png') !important;
+            transform: rotate(90deg);
+        }
+        .L.D{
+            background-image: url('./arrowPerpendSameDirPreklop.png') !important;
+            transform: rotate(0deg);
+        }
+        .paragraph{
+            max-width: 655px;
+            line-height: 1.4;
+            font-size: 1.2rem;
+        }
+        .napis{
+            display: inline-block;
+            margin-top: 50px;
+        }
+        .napis > h2{
+            display: inline;
+        }
+        .napis > p{
+            display: inline;
+            font-size: 1.2rem;
+        }
+        .presentResult{
+            font-size: 1.4rem;
+        }
+        
+        @media only screen and (max-width: 800px) { /*777 40em*/
+            #controls{
+                gap: 5px !important;
+            }
+            #left{
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            #visualisationDelayControls{
+                padding-top: 15px;
+            }
+            .popisek{ 
+                font-family: sans-serif;
+            }
+            
+            .ctverecek{
+                height: 1.25rem;
+                width: 1.25rem;
+                vertical-align: middle;
+            }
+            table{
+                width: 100% !important;
+                border-spacing: 0;
+            }
+            .popup{
+                width: 95%;
+                font-size: 0.8rem;
+            }
+            .textHolder{
+                display: flex;
+                gap: 5px;
+                font-size: 1.5rem !important;
+            }
+            .textHolder > b{
+                width: fit-content;
+            }
+            .textHolder > div{
+                flex-shrink: 0;
+            }
+            .textHolder{
+                align-items: baseline;
+            }
+        }
+        @media (prefers-color-scheme: dark) {
+            h1{
+                color: green;
+            }
+            td{
+                background: #0a0a0d;
+            }
+            :root{
+              color-scheme: dark;
+            }
+           .considered{
+                background: red !important;
+            }
+            .green{
+                background: #206e2f8c;
+            }
+           .visited:not(.green, .start){
+            background: #c77e1fbf;
+            }
+            .skipped:not(.green, .start){
+                background: #4eb54bc2; 
+            }
+            .skippedText{
+                color: #4eb54bc2;
+            }
+            .inlineCode{
+                background: #33383ac7;
+            }
+            .blockCode{
+                background: #33383ac7;
+            }
+            .popup{
+                background: rgba(10, 11, 11, 0.65);
+                backdrop-filter: blur(5px);
+            }
+            /* .cesta2{
+                background: #2d98ff !important;
+            } */
+            .pathText{
+                color: cyan;
+            }
+            .cesta{
+                background-image: url('./rightArrow.png') !important;
+                background-size: cover !important;
+                /* these two work too */
+                /* background-size: 100% 100% !important; */
+                /* background-size: contain !important; */
+
+            }
+        }
+        .start{
+            background: #f85701 !important;
+        }
+
+        @media (pointer:coarse) {
+             button, select{
+                height: 40px;
+            }
+            #helpButton{
+                margin-left: 15px;
+                transform: scale(1.5);
+            }
+            #visualisationDelayControls{
+                font-size: clamp(1rem, 2.5vw, 1.1rem);
+            }
+            .custom-file-upload{
+                font-size:clamp(1rem, 2.5vw, 1.1rem);
+            }
+            #mazePicker{
+                font-size: clamp(1rem, 2.5vw, 1.1rem);
+            }
+        }
+    </style>
+</head>
+<body style="font-family: 'Roboto', sans-serif;">
+    <div id="controls" style="display: flex;flex-wrap: wrap;gap: 28px;"> 
+      <div>
+        <h1 style="margin: 0 auto;width: fit-content;">36-Z4-3 Náledí</h1>
+        <div id="left" style="display: inline-flex;align-items: baseline;flex-wrap: wrap;column-gap: 10px;justify-content: center;">
+          <select autofocus  id="mazePicker">
+            <option value="">Select the maze</option>
+            <option>uk.txt</option>
+            <option>01.txt</option>
+            <option>02.txt</option>
+            <option>03.txt</option>
+          </select>
+            OR
+          <input hidden type="file" accept="text/plain" id="inputfile">
+            <div>
+                <button id="fakefileinput">
+                    <label for="inputfile" class="custom-file-upload"> Load your own...</label>
+                </button>
+                <label id="selectedFileLabel" style="font-family:Tahoma,sans-serif;padding-left: 4px;"></label>
+              </div>
+              <p id="visualisationDelayControls">Delay in ms:
+              <input type="number" min="0" style="width: 5rem" value="7" id="visualisationDelayPicker">
+              </p>
+            </div>
+        </div>
+        <div id="right" style="flex-grow: 1;flex-grow: 1;flex-basis: 431px;min-width: min-content;"> <!-- originally there was flex-basis: min-content; it worked pretty well, I just wanted to move the breakpoint of how it wraps to a bit wider, I wanted to put flex-basis: calc(min-content + 50px), but it doesn't work, so I tried padding-left: 50px, which worked, but it looked weird again on my phone (I didn't want to add more media query, so I added flex-basis: 431px (value found experimentally)) -->
+          <div id="legenda" style="display: flex;gap:20px;flex-wrap: wrap">
+            <div class="textHolder">
+                <div class="green ctverecek"></div>
+                <b class="greenText popisek">wall</b>
+            </div>
+            <div class="textHolder">
+                <div class="visited ctverecek"></div>
+                <b class="visitedText popisek">visited cell</b>
+            </div>
+            <div class="textHolder">
+                 <div class="skipped ctverecek"></div>
+                <b class="skippedText popisek">2 times visited cell</b>
+            </div>
+            <div class="textHolder">
+                <div class="start ctverecek"></div>
+                <b class="startText popisek">start</b>
+            </div>
+            <div class="textHolder">
+                <div class="endCtverecek ctverecek"></div>
+                <b class="endText popisek">end</b>
+            </div>
+            <div class="textHolder">
+                <div class="considered ctverecek"></div>
+                <b style="color:#c92222" class="popisek">already visited cell, around which the neighbors are being searched <u>now</u></b>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div id="tableContainer" style="padding-top: 20px">
+     </div>
+     <div id="funFact" style="display: flex;flex-direction: column;align-items: center;" class="hiddenWithNoHeight">
+         <span class="napis"><h2>Fun fact:</h2></span>
+         <div>
+         <p class="paragraph">The way DFS works, you can click on any cell which was scanned already (<span class="skippedText"> <span class="skipped ctverecek"></span> <span class="visited ctverecek"></span> any visited cell</span> and it will show you a path (probably a longer one) from there to start :)</p>
+         <p class="paragraph">If you want a short path, look at <a href="https://petrlaskevic.github.io/Visualising-BFS-in-HTML-and-JS/">BFS</a></p>
+         <p class="paragraph">If you want to click on more cells, you can scan <a href="javascript:void(0);" id="resume">all remaining cells</a></p>
+         </div>
+     </div>
+     <p id="presentResult"></p>
+     <span class="napis"><h2>Depth First Search (DFS)</h2> <p>is an algorithm which can be used for solving mazes.</p></span> 
+     <p class="paragraph"> It is <b>not</b> guaranteed to show the shortest path, it just shows <b>a</b> path. As you can see here, these paths are a lot longer than the paths calculated by BFS would be. In this task, the requirement was a path, not a shortest path, so this algorithm got full points</p>  <!-- That is not a mistake in implementation.</p> Obviously, for these mazes BFS or A* are a better choice -->
+
+     <pre id="mapText"></pre>
+     <div class="popup hidden" id="loadOnLocalServer">
+        <p class="heading">
+            <b>You need to launch this website as a local server</b> (for example, if you have python use <code class="inlineCode">py -m http.server</code>) <b>for the maze selector to work.</b>
+        </p>
+         <p>Reason: due to security restrictions in Firefox and Chrome (<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2019-21/#CVE-2019-11730">CVE-2019-11730</a>), local HTML pages cannot use JS <code class="inlineCode">fetch()</code> to load text files in the same directory when the protocol is <code class="inlineCode">file:</code> and not <code class="inlineCode">http:</code> or <code class="inlineCode">https:</code> 
+        </p>
+        <div style="text-align: right;">
+            <button id="loadOnLocalServerOK" class="ok" onclick="document.getElementById('loadOnLocalServer').classList.add('hidden')">OK</button>
+        </div>
+     </div>
+     <div class="popup hidden" id="format">
+        <b class="heading">File format:</b>
+        <ul>
+            <li>The maze is a rectangle (<u>meaning all lines have the same length</u>) enclosed by a wall on all 4 sides</li>
+            <li>For walls, use the <code class="inlineCode">X</code> character</li>
+            <li>For freely navigatable fields use spaces</li>
+            <li>Each line is a row of the maze</li>
+            <li>So, newlines (Enter) form separate rows </li>
+            <li>After you've specified the maze, specify the start and end fields, in the following format:
+                <ul>
+                <li><code class="inlineCode">start [column], [row]</code></li>
+                <li><code class="inlineCode">end [column], [row]</code></li>
+                <li>For example: <!-- I had to purposely unindent the text in pre, else a bunch of unneeded tab characters were rendered -->
+<pre class="blockCode">start 68, 52
+end 21, 22
+</pre>              Indexing starts from 0. <br>
+                    Remember these two lines must be the last two lines of the file.
+                </li>
+                </ul>
+            </li>
+            <li>
+                File format is <code class="inlineCode">txt</code>
+            </li>
+            
+            <p>So a simple maze may look like this:
+                <pre class="blockCode">
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+X         X   X                 X
+X XXX X   X X   XXXXX X   XXX X X
+X     X X   X X   X   X X   X   X
+X  XXXX   XXX XXX X  XXX X  X   X
+X     X           X         X   X
+X  X   XX XX XX X X X XXX       X
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+start 6, 2
+end 31, 6
+
+</pre>
+            </p>
+        </ul>
+        <div style="text-align: right;">
+            <button class="ok" id="formatOK" onclick="let a = document.getElementById('format');a.classList.add('hidden')">OK</button>
+        </div>
+     </div>
+     <div id="endNotSpecified" class="popup hidden">
+         <p>End of the maze not specified, refer to <a href="#" onclick="this.parentElement.parentElement.classList.add('hidden');document.getElementById('helpButton').click()">file format guide</a></p>
+     </div>
+     <div id="startNotSpecified" class="popup hidden">
+         <p>Start of the maze not specified, refer to <a href="#" onclick="this.parentElement.parentElement.classList.add('hidden');document.getElementById('helpButton').click()">file format guide</a></p>
+     </div>
+
+<script src="dfs.js"></script>
+</body>
+</html>

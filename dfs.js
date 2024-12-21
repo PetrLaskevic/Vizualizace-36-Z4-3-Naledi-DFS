@@ -387,13 +387,7 @@ mazePicker.addEventListener("change", function(e){
 			document.getElementById("loadOnLocalServerOK").focus();
 			return;
 		}else{
-				//is not local server
-				if(location.hostname.endsWith("github.io")){
-					mazeUrl = window.location.href + mazeSelected;
-				}else{
-					//is local server
-					mazeUrl = "./"  + mazeSelected;
-				}	
+			mazeUrl = "./"  + mazeSelected;	
 		}
 		
 		fetch(mazeUrl)

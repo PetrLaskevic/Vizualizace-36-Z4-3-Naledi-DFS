@@ -109,8 +109,7 @@ class BFSMazeApp{
 	    console.log(text)
 	   
 	    this.tryToFitTheMazeOnScreen();
-	    let mapText = document.getElementById("mapText");
-	    mapText.textContent = "";
+		
 	    for(let x = 1; x < text.length; x++){
 
 	    	let row = text[x].split("")
@@ -119,7 +118,6 @@ class BFSMazeApp{
 	    	
 	    	//the 2D array, storing the maze in place
 			this.maze.push(row); 
-	    	mapText.textContent += row + "\n";
 
 	    	for(let y = 0; y < text[1].length; y++){
 				let character = row[y];
